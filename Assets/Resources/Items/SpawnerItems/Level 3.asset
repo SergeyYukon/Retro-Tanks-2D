@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5138159fb150594f9a6461369186147, type: 3}
+  m_Name: Level 3
+  m_EditorClassIdentifier: 
+  sceneName: Level 3
+  goalKill: 30
+  waves:
+  - spawnCoolDown: 1
+    timeToNextStage: 5
+    stages:
+    - enemyType: 1
+      amount: 5
+    - enemyType: 0
+      amount: 4
+    - enemyType: 2
+      amount: 1
+  - spawnCoolDown: 2
+    timeToNextStage: 10
+    stages:
+    - enemyType: 2
+      amount: 5
+  - spawnCoolDown: 3
+    timeToNextStage: 5
+    stages:
+    - enemyType: 1
+      amount: 15
+  spawnPositions:
+  - {x: 13.44, y: 7.2, z: 0}
+  - {x: 0.39, y: 7.46, z: 0}
+  - {x: -13.7, y: 7.29, z: 0}
