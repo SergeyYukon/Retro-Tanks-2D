@@ -4,14 +4,13 @@ using Infrastructure.Data;
 
 namespace Components.Player
 {
-    public class PlayerMovement : MonoBehaviour, IMovement
+    public class PlayerMovement : Movement
     {
         [SerializeField] private Rigidbody2D rb;
         private InputService _input;
         private GameData _gameData;
         private Vector3 _rotateDirection;
         private float _movementSpeed;
-        private float _rotationSpeed;
 
         public void Construct(InputService input, float movementSpeed, float rotationSpeed, GameData gameData)
         {
@@ -31,11 +30,11 @@ namespace Components.Player
             if (_input.Axis.magnitude > 0.1f)
             {                  
                 Movement();                  
-                Rotation();
+                Rotation(_rotateDirection);
             }
         }
 
-        public void ChangeSpeed(float amount)
+        public override void ChangeSpeed(float amount)
         {
             _movementSpeed += amount;
         }
@@ -49,13 +48,6 @@ namespace Components.Player
         private void Movement()
         {
             rb.MovePosition(rb.position + _input.Axis * _movementSpeed * Time.fixedDeltaTime);
-        }
-
-        private void Rotation()
-        {
-            Vector3 rotatedVectorToTarget = Quaternion.Euler(0, 0, 90) * _rotateDirection;
-            Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, rotatedVectorToTarget);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
         }
     }
 }

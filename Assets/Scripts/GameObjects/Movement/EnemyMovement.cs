@@ -3,11 +3,10 @@ using UnityEngine.AI;
 
 namespace Components.Enemy
 {
-    public class EnemyMovement : MonoBehaviour, IMovement
+    public class EnemyMovement : Movement
     {
         [SerializeField] private NavMeshAgent _agent;
         [SerializeField] private Transform _forwardPoint;
-        private float _rotationSpeed;
         private Transform _baseTransform;
         private Transform _currentTarget;
         private const float _distanceToBase = 3;
@@ -40,10 +39,10 @@ namespace Components.Enemy
         private void FixedUpdate()
         {
             Movement();
-            Rotation();
+            RotationTo();
         }
 
-        public void ChangeSpeed(float amount)
+        public override void ChangeSpeed(float amount)
         {
             _agent.speed += amount;
         }
@@ -66,19 +65,15 @@ namespace Components.Enemy
             return direction;
         }
 
-        private void Rotation()
+        private void RotationTo()
         {
             if (Direction() != Vector3.zero)
             {
-                Vector3 rotatedVectorToTarget = Quaternion.Euler(0, 0, 90) * Direction();
-                Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, rotatedVectorToTarget);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
+                Rotation(Direction());
             }
             else
             {
-                Vector3 rotatedVectorToTarget = Quaternion.Euler(0, 0, 90) * DirectionToBase();
-                Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, rotatedVectorToTarget);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
+                Rotation(DirectionToBase());
             }
         }
 

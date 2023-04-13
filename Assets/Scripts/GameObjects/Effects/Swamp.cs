@@ -8,12 +8,12 @@ namespace Components
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            collision.gameObject.GetComponentInParent<IMovement>().ChangeSpeed(-amountChangeSpeed);
+            collision.gameObject.GetComponentInParent<Movement>().ChangeSpeed(-amountChangeSpeed);
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            collision.gameObject.GetComponentInParent<IMovement>().ChangeSpeed(amountChangeSpeed);
+            collision.gameObject.GetComponentInParent<Movement>().ChangeSpeed(amountChangeSpeed);
         }
     }
 }
