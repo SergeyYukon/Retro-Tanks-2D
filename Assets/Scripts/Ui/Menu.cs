@@ -1,10 +1,10 @@
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Infrastructure.States;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Ui
 {
@@ -12,8 +12,12 @@ namespace Ui
     {
         [SerializeField] private Image continueImage;
         [SerializeField] private Button continueButton;
+        [SerializeField] private Toggle fullscreenToggle;
+        [SerializeField] private TMP_Dropdown qualityDropdown;
+        [SerializeField] private TMP_Dropdown resolutionDropdown;
         [SerializeField] private Image[] levelsImage;
         [SerializeField] private Button[] levelsButton;
+        private Resolution[] resolutions;
         private IGameStateMachine _gameStateMachine;
         private GameData _gameData;
         private SaveLoadService _saveLoadService;
@@ -24,19 +28,22 @@ namespace Ui
             _gameData = gameData;
             _saveLoadService = saveLoadService;
 
-            if (_gameData.LevelsEnd == 0)
-            {
-                continueButton.interactable = false;
-                var tempColor = continueImage.color;
-                tempColor.a = 0.5f;
-                continueImage.color = tempColor;
-            }
+            SetSettings();
+            CheckUnlock();
         }
 
-        public void CheckUnlockLevels()
+        public void CheckUnlock()
         {
             for (int i = 0; i < levelsImage.Length; i++)
             {
+                if (_gameData.LevelsEnd == 0)
+                {
+                    continueButton.interactable = false;
+                    var tempColor = continueImage.color;
+                    tempColor.a = 0.5f;
+                    continueImage.color = tempColor;
+                }
+
                 if (i > _gameData.LevelsEnd)
                 {
                     levelsButton[i].interactable = false;
@@ -52,7 +59,7 @@ namespace Ui
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
             _gameData = _saveLoadService.LoadProgress();
-            CheckUnlockLevels();
+            CheckUnlock();
         }
 
         public void SelectScene(string sceneName)
@@ -60,9 +67,49 @@ namespace Ui
             _gameStateMachine.EnterScene(sceneName);
         }
 
+        public void SetSettings()
+        {
+            GetResolutions();    
+            fullscreenToggle.isOn = _gameData.FullscreenSettings;            
+            qualityDropdown.value = _gameData.QualitySettings;
+            resolutionDropdown.value = _gameData.ResolutionSettings;
+            Fullscreen(_gameData.FullscreenSettings);
+            Quality(_gameData.QualitySettings);
+            Resolution(_gameData.ResolutionSettings);
+        }
+
+        public void Fullscreen(bool toggle)
+        {
+            Screen.fullScreen = toggle;
+            _gameData.FullscreenSettings = toggle;
+        }
+
+        public void Quality(int quality)
+        {
+            QualitySettings.SetQualityLevel(quality);
+            _gameData.QualitySettings = quality;
+        }
+
+        public void Resolution(int resolution)
+        {
+            Screen.SetResolution(resolutions[resolution].width, resolutions[resolution].height, _gameData.FullscreenSettings);
+            _gameData.ResolutionSettings = resolution;
+        }
+
         public void Exit()
         {
             Application.Quit();
+        }
+
+        private void GetResolutions()
+        {
+            resolutions = Screen.resolutions;
+            var resolutionsList = new List<string>();
+            foreach (var item in resolutions)
+            {
+                resolutionsList.Add(item.width + "x" + item.height);
+            }
+            resolutionDropdown.AddOptions(resolutionsList);
         }
     }
 }

@@ -6,6 +6,10 @@ namespace Infrastructure.Data
     [Serializable]
     public class GameData
     {
+        [SerializeField] private bool _fullscreenSettings = false;
+        [SerializeField] private int _qualitySettings = 5;
+        [SerializeField] private int _resolutionSettings = 16;
+
         [SerializeField] private int _levelsEnd;
         [SerializeField] private float _upgradeMoveSpeed;
         [SerializeField] private float _upgradeCooldownShoot;
@@ -19,6 +23,24 @@ namespace Infrastructure.Data
 
         private Action _onDefeat;
         private Action _onWin;
+
+        public bool FullscreenSettings
+        {
+            get => _fullscreenSettings;
+            set => _fullscreenSettings = value;
+        }
+
+        public int QualitySettings
+        {
+            get => _qualitySettings;
+            set => _qualitySettings = value;
+        }
+
+        public int ResolutionSettings
+        {
+            get => _resolutionSettings;
+            set => _resolutionSettings = value;
+        }
 
         public int LevelsEnd
         {
