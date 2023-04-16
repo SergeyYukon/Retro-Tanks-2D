@@ -55,48 +55,56 @@ namespace Ui
 
         public void NewGame()
         {
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-            _gameData = _saveLoadService.LoadProgress();
+            _gameData.ResetPlayerData();
             CheckUnlock();
         }
 
         public void SelectScene(string sceneName)
         {
+            _saveLoadService.SaveProgress(_gameData);
             _gameStateMachine.EnterScene(sceneName);
         }
 
         public void SetSettings()
         {
-            GetResolutions();    
-            fullscreenToggle.isOn = _gameData.FullscreenSettings;            
-            qualityDropdown.value = _gameData.QualitySettings;
-            resolutionDropdown.value = _gameData.ResolutionSettings;
-            Fullscreen(_gameData.FullscreenSettings);
-            Quality(_gameData.QualitySettings);
-            Resolution(_gameData.ResolutionSettings);
+            GetResolutions();
+            if (_gameData.CustomSettings)
+            {
+                CustomSettings();
+            }
+            else
+            {
+                DefaultSettings();
+            }
         }
 
         public void Fullscreen(bool toggle)
         {
             Screen.fullScreen = toggle;
-            _gameData.FullscreenSettings = toggle;
         }
 
         public void Quality(int quality)
         {
             QualitySettings.SetQualityLevel(quality);
-            _gameData.QualitySettings = quality;
         }
 
         public void Resolution(int resolution)
         {
             Screen.SetResolution(resolutions[resolution].width, resolutions[resolution].height, _gameData.FullscreenSettings);
-            _gameData.ResolutionSettings = resolution;
+        }
+
+        public void SettingsChanged()
+        {
+            _gameData.CustomSettings = true;
+            _gameData.FullscreenSettings = fullscreenToggle.isOn;
+            _gameData.QualitySettings = qualityDropdown.value;
+            _gameData.ResolutionSettings = resolutionDropdown.value;
+            _saveLoadService.SaveProgress(_gameData);
         }
 
         public void Exit()
         {
+            _saveLoadService.SaveProgress(_gameData);
             Application.Quit();
         }
 
@@ -106,9 +114,31 @@ namespace Ui
             var resolutionsList = new List<string>();
             foreach (var item in resolutions)
             {
-                resolutionsList.Add(item.width + "x" + item.height);
+                resolutionsList.Add($"{item.width}x{item.height}");
             }
             resolutionDropdown.AddOptions(resolutionsList);
+        }
+
+        private void DefaultSettings()
+        {
+            fullscreenToggle.isOn = true;
+            int maxQuality = qualityDropdown.options.Count - 1;
+            qualityDropdown.value = maxQuality;
+            int maxResolution = resolutionDropdown.options.Count - 1;
+            resolutionDropdown.value = maxResolution;
+            Screen.fullScreen = true;
+            QualitySettings.SetQualityLevel(maxQuality);
+            Screen.SetResolution(resolutions[maxResolution].width, resolutions[maxResolution].height, true);
+        }
+
+        private void CustomSettings()
+        {
+            fullscreenToggle.isOn = _gameData.FullscreenSettings;
+            qualityDropdown.value = _gameData.QualitySettings;
+            resolutionDropdown.value = _gameData.ResolutionSettings;
+            Screen.fullScreen = _gameData.FullscreenSettings;
+            QualitySettings.SetQualityLevel(_gameData.QualitySettings);
+            Screen.SetResolution(resolutions[_gameData.ResolutionSettings].width, resolutions[_gameData.ResolutionSettings].height, _gameData.FullscreenSettings);
         }
     }
 }
