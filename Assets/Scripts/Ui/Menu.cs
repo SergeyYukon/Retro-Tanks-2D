@@ -116,6 +116,7 @@ namespace Ui
             {
                 resolutionsList.Add($"{item.width}x{item.height}");
             }
+            resolutionDropdown.ClearOptions();
             resolutionDropdown.AddOptions(resolutionsList);
         }
 

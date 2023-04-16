@@ -1491,7 +1491,7 @@ GameObject:
   - component: {fileID: 1544656619722476850}
   - component: {fileID: 3869141876970499051}
   m_Layer: 0
-  m_Name: TextVideo
+  m_Name: TextGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1545,7 +1545,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Video
+  m_text: Graphics
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3527,7 +3527,7 @@ GameObject:
   - component: {fileID: 1826858850605288767}
   - component: {fileID: 2735176519942032579}
   m_Layer: 0
-  m_Name: TextControl
+  m_Name: TextControls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3581,7 +3581,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Control
+  m_text: Controls
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4564,7 +4564,7 @@ GameObject:
   - component: {fileID: 8209230682151827727}
   - component: {fileID: 2890583408571084411}
   m_Layer: 0
-  m_Name: ButtonVideo
+  m_Name: ButtonGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7752,7 +7752,7 @@ GameObject:
   - component: {fileID: 9061233148344715026}
   - component: {fileID: 3610204975055919358}
   m_Layer: 5
-  m_Name: PanelVideoSettings
+  m_Name: PanelGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7833,7 +7833,7 @@ GameObject:
   - component: {fileID: 2870481064759946364}
   - component: {fileID: 7634164781097216881}
   m_Layer: 0
-  m_Name: ButtonControl
+  m_Name: ButtonControls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
