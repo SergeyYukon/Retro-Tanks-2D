@@ -10,8 +10,9 @@ namespace Ui
 {
     public class Menu : MonoBehaviour
     {
-        [SerializeField] private Image continueImage;
         [SerializeField] private Button continueButton;
+        [SerializeField] private TextMeshProUGUI continueText;
+        [SerializeField] private Color lockColor;
         [SerializeField] private Toggle fullscreenToggle;
         [SerializeField] private TMP_Dropdown qualityDropdown;
         [SerializeField] private TMP_Dropdown resolutionDropdown;
@@ -39,9 +40,7 @@ namespace Ui
                 if (_gameData.LevelsEnd == 0)
                 {
                     continueButton.interactable = false;
-                    var tempColor = continueImage.color;
-                    tempColor.a = 0.5f;
-                    continueImage.color = tempColor;
+                    continueText.color = lockColor;
                 }
 
                 if (i > _gameData.LevelsEnd)
