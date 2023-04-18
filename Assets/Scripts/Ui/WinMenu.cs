@@ -10,6 +10,7 @@ namespace Ui
     public class WinMenu : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI textCounter;
+        [SerializeField] private TextMeshProUGUI winText;
         [SerializeField] private string endGameText;
         private IGameStateMachine _gameStateMachine;
         private GameData _gameData;
@@ -34,9 +35,16 @@ namespace Ui
         public void NextLevel()
         {
             int index = SceneManager.GetActiveScene().buildIndex;
-            index++;
-            _gameStateMachine.EnterScene(index);           
-            _gameStateMachine.Enter<PauseResumeState>();
+            if (index == 10)
+            {
+                winText.text = endGameText;
+            }
+            else
+            {
+                index++;
+                _gameStateMachine.EnterScene(index);
+                _gameStateMachine.Enter<PauseResumeState>();
+            }
         }
     }
 }

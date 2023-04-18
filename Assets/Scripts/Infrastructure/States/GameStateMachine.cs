@@ -20,10 +20,15 @@ namespace Infrastructure.States
             GameData gameData = new GameData();
             LootGeneratorService lootGeneratorService = new LootGeneratorService();
             SaveLoadService saveLoadService = new SaveLoadService();
-            InputService input = new InputService();
+
+            InputController inputController = new InputController();
+            inputController.Enable();
+            InputServicePlayer1 inputPlayer1 = new InputServicePlayer1(inputController);
+            InputServicePlayer2 inputPlayer2 = new InputServicePlayer2(inputController);
+
             ItemsService itemsService = new ItemsService();
-            UiFactory uiFactory = new UiFactory(input, this, saveLoadService);
-            GameObjectsFactory gameObjectsFactory = new GameObjectsFactory(input, itemsService, lootGeneratorService);
+            UiFactory uiFactory = new UiFactory(inputPlayer1, this, saveLoadService);
+            GameObjectsFactory gameObjectsFactory = new GameObjectsFactory(inputPlayer1, inputPlayer2, itemsService, lootGeneratorService);
 
             _states = new Dictionary<Type, IState>
             {

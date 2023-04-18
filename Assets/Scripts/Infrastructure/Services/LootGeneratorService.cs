@@ -6,7 +6,7 @@ namespace Infrastructure.Services
 {
     public class LootGeneratorService 
     {
-        private enum LootType { Empty, Heal, UpgradeMoveSpeed, UpgradeCooldownShoot }
+        private enum LootType { Empty, Heal, UpgradeMoveSpeed, UpgradeCooldownShoot, UpgradeMaxHealth, UpgradeDamage }
         private LootType lootType;
 
         public void GetLoot(Vector3 position)
@@ -24,6 +24,12 @@ namespace Infrastructure.Services
                     break;
                 case LootType.UpgradeCooldownShoot:
                     UnityEngine.Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.UpgradeCooldownShootBonusPath), position, Quaternion.identity);
+                    break;
+                case LootType.UpgradeMaxHealth:
+                    UnityEngine.Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.UpgradeMaxHealthBonusPath), position, Quaternion.identity);
+                    break;
+                case LootType.UpgradeDamage:
+                    UnityEngine.Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.UpgradeDamageBonusPath), position, Quaternion.identity);
                     break;
             }
         }

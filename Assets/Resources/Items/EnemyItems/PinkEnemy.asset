@@ -21,6 +21,8 @@ MonoBehaviour:
   damage: 25
   pushPowerShoot: 7
   cooldownShoot: 4
+  distanceToAttackTarget: 2
+  patrolDistance: 0
   layerToAttack:
     serializedVersion: 2
     m_Bits: 64

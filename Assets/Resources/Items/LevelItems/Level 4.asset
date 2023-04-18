@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelType: 1
   sceneName: Level 4
-  startPlayerPosition: {x: -11.8, y: -5.9, z: 0}
+  startPlayer1Position: {x: -12.96, y: -5.3, z: 0}
+  startPlayer2Position: {x: -10.52, y: -7.16, z: 0}
   basePosition: {x: -12.74, y: -7.37, z: 0}

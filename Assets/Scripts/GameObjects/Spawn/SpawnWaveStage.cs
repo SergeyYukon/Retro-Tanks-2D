@@ -10,7 +10,16 @@ namespace Components.Spawn
         [SerializeField] private EnemyType enemyType;
         [SerializeField] private int amount;
 
-        public EnemyType EnemyType => enemyType;
-        public int Amount => amount;
+        public EnemyType EnemyType
+        {
+            get => enemyType;
+            set => enemyType = value;
+        }
+
+        public int Amount 
+        { 
+            get => amount;
+            set => amount = value;
+        }
     }
 }

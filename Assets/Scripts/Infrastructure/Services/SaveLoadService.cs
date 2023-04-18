@@ -5,19 +5,17 @@ namespace Infrastructure.Services
 {
     public class SaveLoadService 
     {
-        private const string GameDataPrefsKey = "GameData";
-
-        public void SaveProgress(GameData gameData)
+        public void SaveProgress(GameData gameData, string key)
         {
             string json = JsonUtility.ToJson(gameData, true);
-            PlayerPrefs.SetString(GameDataPrefsKey, json);
+            PlayerPrefs.SetString(key, json);
 
             Debug.Log($"Game state saved {json}");
         }
 
-        public GameData LoadProgress()
+        public GameData LoadProgress(string key)
         {
-            string json = PlayerPrefs.GetString(GameDataPrefsKey);
+            string json = PlayerPrefs.GetString(key);
             if (!string.IsNullOrEmpty(json))
             {
                 Debug.Log($"Game state loaded {json}");

@@ -8,38 +8,54 @@ namespace Components.Enemy
         [SerializeField] private NavMeshAgent _agent;
         [SerializeField] private Transform _forwardPoint;
         private Transform _baseTransform;
+        private Transform _player1Transform;
+        private Transform _player2Transform;
         private Transform _currentTarget;
-        private const float _distanceToBase = 3;
+        private float _distanceToAttackTarget;
+        private EnemyType _type;
+        private bool _isAttackingEnemy;
 
-        public void Construct(Transform baseTransform,float movementSpeed, float rotationSpeed)
+        public void Construct(Transform baseTransform, Transform player1Transform, Transform player2Transform, float movementSpeed, float rotationSpeed,
+            float distanceToAttackTarget, EnemyType type)
         {
             _agent.updateRotation = false;
             _agent.updateUpAxis = false;
 
             _baseTransform = baseTransform;
+            _player1Transform = player1Transform;
+            _player2Transform = player2Transform;
             _agent.speed = movementSpeed;
             _rotationSpeed = rotationSpeed;
+            _distanceToAttackTarget = distanceToAttackTarget;
+            _type = type;
 
-            _currentTarget = _baseTransform;
+            StartTarget();
         }
 
         private void Update()
-        {             
-          
-            if(DistanceToBase() > _distanceToBase)               
+        {
+            if (_isAttackingEnemy)
             {
-                _currentTarget = _baseTransform;            
+                _currentTarget = AttackPlayerTarget(_player1Transform, _player2Transform);
+            }
+
+            if (DistanceToTarget(_currentTarget) < _distanceToAttackTarget)
+            {
+                _agent.isStopped = true;
             }
             else
             {
-                _agent.isStopped = true;
+                _agent.isStopped = false;
             }
         }
 
         private void FixedUpdate()
         {
-            Movement();
-            RotationTo();
+            if (_currentTarget != null)
+            {
+                Movement();
+                RotationTo();
+            }
         }
 
         public override void ChangeSpeed(float amount)
@@ -48,38 +64,33 @@ namespace Components.Enemy
         }
 
         private void Movement()
-        {            
-            _agent.SetDestination(_currentTarget.position);
-        }
-
-        private Vector3 Direction()
-        {
-            Vector2 destination = _agent.velocity;
-            Vector3 direction = new Vector3(destination.y, -destination.x, 0).normalized;
-            return direction;
-        }
-
-        private Vector3 DirectionToBase()
-        {
-            Vector3 direction = new Vector3(_currentTarget.position.y - transform.position.y, -(_currentTarget.position.x - transform.position.x), 0).normalized;
-            return direction;
+        {                
+            _agent.SetDestination(_currentTarget.position);           
         }
 
         private void RotationTo()
         {
-            if (Direction() != Vector3.zero)
+            if (Direction(_agent.velocity) != Vector3.zero)
             {
-                Rotation(Direction());
+                Rotation(Direction(_agent.velocity));
             }
             else
             {
-                Rotation(DirectionToBase());
+                Rotation(DirectionToTarget(_currentTarget));
             }
         }
 
-        private float DistanceToBase()
+        private void StartTarget()
         {
-            return Vector3.Distance(transform.position, _baseTransform.position);
+            if (_type == EnemyType.AttackPlayerEnemy)
+            {
+                _isAttackingEnemy = true;
+                _currentTarget = AttackPlayerTarget(_player1Transform, _player2Transform);
+            }
+            else
+            {
+                _currentTarget = _baseTransform;
+            }
         }
     }
 }

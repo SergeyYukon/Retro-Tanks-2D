@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4050137816214443523, guid: 3e567d122486eea448afe71392b8d9af, type: 3}
   bulletPrefab: {fileID: 2890923275575858151, guid: af3549a823b870646925514d7503b967, type: 3}
-  movementSpeed: 3
+  movementSpeed: 2
   rotationSpeed: 600
   health: 200
   damage: 50
-  pushPowerShoot: 10
-  cooldownShoot: 0.75
+  pushPowerShoot: 15
+  cooldownShoot: 1
   layerToAttack:
     serializedVersion: 2
     m_Bits: 128

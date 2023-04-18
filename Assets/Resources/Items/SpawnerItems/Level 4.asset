@@ -16,21 +16,25 @@ MonoBehaviour:
   goalKill: 35
   waves:
   - spawnCoolDown: 3
-    timeToNextStage: 10
+    timeToNextStage: 15
     stages:
     - enemyType: 1
-      amount: 20
+      amount: 15
     - enemyType: 0
       amount: 2
     - enemyType: 2
       amount: 2
+    - enemyType: 3
+      amount: 4
   - spawnCoolDown: 1
     timeToNextStage: 5
     stages:
     - enemyType: 0
-      amount: 6
+      amount: 5
     - enemyType: 2
       amount: 5
+    - enemyType: 4
+      amount: 2
   spawnPositions:
   - {x: 13.44, y: 7.2, z: 0}
   - {x: 8.79, y: 7.46, z: 0}

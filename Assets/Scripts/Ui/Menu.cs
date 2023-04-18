@@ -4,7 +4,6 @@ using Infrastructure.States;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 namespace Ui
 {
@@ -13,12 +12,10 @@ namespace Ui
         [SerializeField] private Button continueButton;
         [SerializeField] private TextMeshProUGUI continueText;
         [SerializeField] private Color lockColor;
-        [SerializeField] private Toggle fullscreenToggle;
-        [SerializeField] private TMP_Dropdown qualityDropdown;
-        [SerializeField] private TMP_Dropdown resolutionDropdown;
+        [SerializeField] private Image levelEditImage;
+        [SerializeField] private Button levelEditButton;
         [SerializeField] private Image[] levelsImage;
         [SerializeField] private Button[] levelsButton;
-        private Resolution[] resolutions;
         private IGameStateMachine _gameStateMachine;
         private GameData _gameData;
         private SaveLoadService _saveLoadService;
@@ -29,7 +26,6 @@ namespace Ui
             _gameData = gameData;
             _saveLoadService = saveLoadService;
 
-            SetSettings();
             CheckUnlock();
         }
 
@@ -51,6 +47,14 @@ namespace Ui
                     levelsImage[i].color = tempColor;
                 }
             }
+
+            if (!_gameData.IsLevelEdit)
+            {
+                levelEditButton.interactable = false;
+                var tempColor = levelEditImage.color;
+                tempColor.a = 0.5f;
+                levelEditImage.color = tempColor;
+            }
         }
 
         public void NewGame()
@@ -61,85 +65,20 @@ namespace Ui
 
         public void SelectScene(string sceneName)
         {
-            _saveLoadService.SaveProgress(_gameData);
+            _saveLoadService.SaveProgress(_gameData, SaveLoadKeys.GameDataPlayer1Key);
             _gameStateMachine.EnterScene(sceneName);
         }
 
-        public void SetSettings()
+        public void GameType(bool multiplayer)
         {
-            GetResolutions();
-            if (_gameData.CustomSettings)
-            {
-                CustomSettings();
-            }
-            else
-            {
-                DefaultSettings();
-            }
-        }
-
-        public void Fullscreen(bool toggle)
-        {
-            Screen.fullScreen = toggle;
-        }
-
-        public void Quality(int quality)
-        {
-            QualitySettings.SetQualityLevel(quality);
-        }
-
-        public void Resolution(int resolution)
-        {
-            Screen.SetResolution(resolutions[resolution].width, resolutions[resolution].height, _gameData.FullscreenSettings);
-        }
-
-        public void SettingsChanged()
-        {
-            _gameData.CustomSettings = true;
-            _gameData.FullscreenSettings = fullscreenToggle.isOn;
-            _gameData.QualitySettings = qualityDropdown.value;
-            _gameData.ResolutionSettings = resolutionDropdown.value;
-            _saveLoadService.SaveProgress(_gameData);
-        }
+            _gameData.Multiplayer = multiplayer;
+            _saveLoadService.SaveProgress(_gameData, SaveLoadKeys.GameDataPlayer1Key);
+        } 
 
         public void Exit()
         {
-            _saveLoadService.SaveProgress(_gameData);
+            _saveLoadService.SaveProgress(_gameData, SaveLoadKeys.GameDataPlayer1Key);
             Application.Quit();
-        }
-
-        private void GetResolutions()
-        {
-            resolutions = Screen.resolutions;
-            var resolutionsList = new List<string>();
-            foreach (var item in resolutions)
-            {
-                resolutionsList.Add($"{item.width}x{item.height}");
-            }
-            resolutionDropdown.ClearOptions();
-            resolutionDropdown.AddOptions(resolutionsList);
-        }
-
-        private void DefaultSettings()
-        {
-            fullscreenToggle.isOn = true;
-            int maxQuality = qualityDropdown.options.Count - 1;
-            qualityDropdown.value = maxQuality;
-            int maxResolution = resolutionDropdown.options.Count - 1;
-            resolutionDropdown.value = maxResolution;
-            Screen.fullScreen = true;
-            QualitySettings.SetQualityLevel(maxQuality);
-            Screen.SetResolution(resolutions[maxResolution].width, resolutions[maxResolution].height, true);
-        }
-
-        private void CustomSettings()
-        {
-            fullscreenToggle.isOn = _gameData.FullscreenSettings;
-            qualityDropdown.value = _gameData.QualitySettings;
-            resolutionDropdown.value = _gameData.ResolutionSettings;
-            Screen.fullScreen = _gameData.FullscreenSettings;
-            QualitySettings.SetQualityLevel(_gameData.QualitySettings);
-            Screen.SetResolution(resolutions[_gameData.ResolutionSettings].width, resolutions[_gameData.ResolutionSettings].height, _gameData.FullscreenSettings);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace Infrastructure.Factory
 {
     public class UiFactory 
     {
-        private InputService _input;
+        private InputServicePlayer1 _input;
         private IGameStateMachine _gameStateMachine;
         private SaveLoadService _saveLoadService;
 
-        public UiFactory(InputService input, IGameStateMachine gameStateMachine, SaveLoadService saveLoadService)
+        public UiFactory(InputServicePlayer1 input, IGameStateMachine gameStateMachine, SaveLoadService saveLoadService)
         {
             _input = input;
             _gameStateMachine = gameStateMachine;
@@ -25,22 +25,26 @@ namespace Infrastructure.Factory
             GameObject ui = Object.Instantiate(Resources.Load<GameObject>(prefabPath));
             Menu menu = ui.GetComponent<Menu>();
             menu.Construct(gameStateMachine, gameData, saveLoadService);
+            GameSettings settings = ui.GetComponent<GameSettings>();
+            settings.Construct(gameData, saveLoadService);
+            ChangeColor color = ui.GetComponent<ChangeColor>();
+            color.Construct(gameData, saveLoadService);
             return ui;
         }
 
-        public GameObject CreateHud(GameData gameData)
+        public GameObject CreateHud(GameData gameDataPlayer1, GameData gameDataPlayer2)
         {
             GameObject hudObject = Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.HudPath));
             Hud hud = hudObject.GetComponent<Hud>();
-            hud.Construct(gameData);
+            hud.Construct(gameDataPlayer1, gameDataPlayer2);
             return hudObject;
         }
 
-        public GameObject CreateGameMenu(GameData gameData)
+        public GameObject CreateGameMenu(GameData gameDataPlayer1, GameData gameDataPlayer2)
         {
             GameObject gameMenuObject = Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.GameMenuPath));
             GameMenu gameMenu = gameMenuObject.GetComponent<GameMenu>();
-            gameMenu.Construct(gameData, this, _input, _gameStateMachine, _saveLoadService);
+            gameMenu.Construct(gameDataPlayer1, gameDataPlayer2, this, _input, _gameStateMachine, _saveLoadService);
             return gameMenuObject;
         }
 

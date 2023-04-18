@@ -5,5 +5,7 @@ namespace Items.Level
     {
         MainMenu,
         Level,
+        EditLevel,
+        LevelEditor
     }
 }

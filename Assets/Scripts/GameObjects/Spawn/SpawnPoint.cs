@@ -10,12 +10,10 @@ namespace Components.Spawn
         private const int playerLayer = 6;
         private GameObjectsFactory _factory;
         private bool isStopSpawn;
-        private Transform _basePosition;
 
-        public void Construct (GameObjectsFactory factory, Transform basePosition, Transform playerTransform)
+        public void Construct (GameObjectsFactory factory)
         {
             _factory = factory;
-            _basePosition = basePosition;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -36,7 +34,7 @@ namespace Components.Spawn
 
         public void CreateEnemy(EnemyType enemyType, GameData gameData)
         {
-            _factory.CreateEnemy(transform, enemyType, _basePosition, gameData);
+            _factory.CreateEnemy(transform, enemyType, gameData);
         }
 
         public bool IsStopSpawn => isStopSpawn;

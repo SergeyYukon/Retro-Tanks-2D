@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Components.Enemy;
 using Infrastructure.Data;
 using Infrastructure.Factory;
-using Infrastructure.Services;
 using Items;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -27,28 +25,40 @@ namespace Components.Spawn
         private bool _isFinishWave;
         private int _numberStage;
 
+        private float _cooldownEditLevel;
+        private List<SpawnWaveStage> _spawnWaveEditLevel;
+
         private SpawnerItem _spawnerItem;
         private GameObjectsFactory _factory;
-        private Transform _baseTransform;
         private GameData _gameData;
 
-        public void Construct(SpawnerItem spawnerItem, GameObjectsFactory factory, Transform baseTransform, GameData gameData)
+        public void Construct(SpawnerItem spawnerItem, GameObjectsFactory factory, GameData gameData)
         {
             _spawnerItem = spawnerItem;
             _factory = factory;
-            _baseTransform = baseTransform;
             _spawnPoints = new List<SpawnPoint>();
             _gameData = gameData;
             
-            CreateSpawnPoints();
+            CreateSpawnPoints(_spawnerItem.SpawnPositions);
         }
 
-        private void CreateSpawnPoints()
+        public void ConstructEditLevel(float cooldown, List<SpawnWaveStage> spawnWave, List<Vector3> spawners, GameObjectsFactory factory, GameData gameData)
+        {                     
+            _factory = factory;
+            _gameData = gameData;
+            _spawnPoints = new List<SpawnPoint>();
+
+            _cooldownEditLevel = cooldown;
+            _spawnWaveEditLevel = spawnWave;
+
+            CreateSpawnPoints(spawners);
+        }
+
+        private void CreateSpawnPoints(List<Vector3> positions)
         {
-            List<Vector3> positions = _spawnerItem.SpawnPositions;
             foreach (var position in positions)
             {
-                GameObject pointObject = _factory.CreateSpawnPoint(position, _baseTransform, transform);
+                GameObject pointObject = _factory.CreateSpawnPoint(position, transform);
                 SpawnPoint point = pointObject.GetComponent<SpawnPoint>();
                 _spawnPoints.Add(point);
             }
@@ -74,7 +84,15 @@ namespace Components.Spawn
 
             if (!_isInitStage)
             {
-                InitStageWave(_numberStage);
+                if (_spawnerItem != null)
+                {
+                    InitStageWave(_numberStage, _spawnerItem.Waves[_numberStage].SpawnCoolDown,
+                        _spawnerItem.Waves[_numberStage].TimeToNextStage, _spawnerItem.Waves[_numberStage].Stages);
+                }
+                else
+                {
+                    InitStageWave(_numberStage, _cooldownEditLevel, 0, _spawnWaveEditLevel);
+                }
             }
 
             for (int i = 0; i < _spawnPoints.Count && _allStageEnemies > 0; i++)
@@ -98,9 +116,16 @@ namespace Components.Spawn
 
             if (CheckStage())
             {
-                if (_numberStage < _spawnerItem.Waves.Count - 1)
+                if (_spawnerItem != null)
                 {
-                    StartCoroutine(WaitNextStage());
+                    if (_numberStage < _spawnerItem.Waves.Count - 1)
+                    {
+                        StartCoroutine(WaitNextStage());
+                    }
+                    else
+                    {
+                        _isFinishWave = true;
+                    }
                 }
                 else
                 {
@@ -109,17 +134,14 @@ namespace Components.Spawn
             }
         }
 
-        private void InitStageWave(int waveIndex)
+        private void InitStageWave(int waveIndex, float cooldown, float timeToNextStage, List<SpawnWaveStage> spawnWave)
         {
             _isInitStage = true;
-            
-            SpawnWave spawnWave = _spawnerItem.Waves[waveIndex];
-
-            _currentSpawnStages = new List<SpawnWaveStage>(spawnWave.Stages);
-            _cooldownSpawn = spawnWave.SpawnCoolDown;
-            _timeToNextStage = spawnWave.TimeToNextStage;
+            _currentSpawnStages = new List<SpawnWaveStage>(spawnWave);
+            _cooldownSpawn = cooldown;
+            _timeToNextStage = timeToNextStage;
             _currentCooldownTime = _cooldownSpawn;
-            
+
             _types = new List<EnemyType>();
             _amounts = new List<int>();
 

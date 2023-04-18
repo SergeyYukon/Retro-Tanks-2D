@@ -1,0 +1,65 @@
+{
+    "ObstaclesTiles": [
+        {
+            "instanceID": 28522
+        }
+    ],
+    "ObstaclesPositions": [
+        {
+            "x": 0,
+            "y": -10,
+            "z": 0
+        }
+    ],
+    "WaterTiles": [],
+    "WaterTilesPositions": [],
+    "CamouflageTiles": [],
+    "CamouflagePositions": [],
+    "SwampTiles": [],
+    "SwampPositions": [],
+    "Player1Position": {
+        "x": -5.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "Player2Position": {
+        "x": -5.0,
+        "y": 5.0,
+        "z": 0.0
+    },
+    "Spawners": [
+        {
+            "x": 5.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    ],
+    "BasePosition": {
+        "x": -5.0,
+        "y": -5.0,
+        "z": 0.0
+    },
+    "Cooldown": 2.5,
+    "Goal": 250,
+    "PinkEnemy": {
+        "enemyType": 0,
+        "amount": 50
+    },
+    "BlueEnemy": {
+        "enemyType": 1,
+        "amount": 50
+    },
+    "GreenEnemy": {
+        "enemyType": 2,
+        "amount": 50
+    },
+    "AttackPlayerEnemy": {
+        "enemyType": 3,
+        "amount": 50
+    },
+    "PatrolEnemy": {
+        "enemyType": 4,
+        "amount": 50
+    },
+    "SpawnWave": []
+}

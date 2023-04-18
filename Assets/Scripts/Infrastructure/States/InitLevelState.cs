@@ -3,9 +3,8 @@ using Infrastructure.Factory;
 using Infrastructure.Services;
 using Items;
 using Items.Level;
+using LevelEdit;
 using Path;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,12 +12,13 @@ namespace Infrastructure.States
 {
     public class InitLevelState : IState
     {
-        private IGameStateMachine _gameStateMachine;
-        private UiFactory _uiFactory;
-        private GameObjectsFactory _gameObjectsFactory;
-        private ItemsService _items;
-        private GameData _gameData;
-        private SaveLoadService _saveLoadService;
+        private readonly IGameStateMachine _gameStateMachine;
+        private readonly UiFactory _uiFactory;
+        private readonly GameObjectsFactory _gameObjectsFactory;
+        private readonly ItemsService _items;
+        private readonly SaveLoadService _saveLoadService;
+        private GameData _gameDataPlayer1;
+        private GameData _gameDataPlayer2;
 
         public InitLevelState(IGameStateMachine gameStateMachine, UiFactory uiFactory,
             GameObjectsFactory gameObjectsFactory, ItemsService itemService, GameData gameData, SaveLoadService saveLoadService)
@@ -27,7 +27,8 @@ namespace Infrastructure.States
             _uiFactory = uiFactory;
             _gameObjectsFactory = gameObjectsFactory;
             _items = itemService;
-            _gameData = gameData;
+            _gameDataPlayer1 = gameData;
+            _gameDataPlayer2 = gameData;
             _saveLoadService = saveLoadService;
         }
 
@@ -38,7 +39,8 @@ namespace Infrastructure.States
 
         private void InitLevel()
         {                             
-            _gameData = _saveLoadService.LoadProgress();
+            _gameDataPlayer1 = _saveLoadService.LoadProgress(SaveLoadKeys.GameDataPlayer1Key);
+            _gameDataPlayer2 = _saveLoadService.LoadProgress(SaveLoadKeys.GameDataPlayer2Key);
 
             string sceneName = SceneManager.GetActiveScene().name;
             LevelItem levelItem = _items.GetLevelItem(sceneName);
@@ -46,18 +48,53 @@ namespace Infrastructure.States
 
             if (type == LevelType.MainMenu)
             {
-                _uiFactory.CreateMenu(PrefabsPath.MenuPath, _gameStateMachine, _gameData, _saveLoadService);
+                _uiFactory.CreateMenu(PrefabsPath.MenuPath, _gameStateMachine, _gameDataPlayer1, _saveLoadService);
             }
 
             if (type == LevelType.Level)
             {
                 SpawnerItem spawnerItem = _items.GetSpawnWave(levelItem.SceneName);
-                _gameData.CurrentGoalKill = _gameData.StartGoalKill = spawnerItem.GoalKill;
-                GameObject baseObject = _gameObjectsFactory.CreateBase(levelItem.BasePosition, _gameData);
-                _gameObjectsFactory.CreatePlayer(levelItem.StartPlayerPosition, _gameData);
-                _gameObjectsFactory.CreateSpawnController(spawnerItem, baseObject.transform, _gameData);
-                _uiFactory.CreateGameMenu(_gameData);
-                _uiFactory.CreateHud(_gameData);
+                _gameDataPlayer1.CurrentGoalKill = _gameDataPlayer1.StartGoalKill = spawnerItem.GoalKill;
+                GameObject baseObject = _gameObjectsFactory.CreateBase(levelItem.BasePosition, _gameDataPlayer1);
+
+                _gameObjectsFactory.CreatePlayer(levelItem.StartPlayer1Position, _gameDataPlayer1, _gameDataPlayer2, numberPlayer: 1);
+
+                if (_gameDataPlayer1.Multiplayer)
+                {
+                    _gameObjectsFactory.CreatePlayer(levelItem.StartPlayer2Position, _gameDataPlayer1, _gameDataPlayer2, numberPlayer: 2);
+                }
+
+                _gameObjectsFactory.CreateSpawnController(spawnerItem, _gameDataPlayer1);
+                _uiFactory.CreateGameMenu(_gameDataPlayer1, _gameDataPlayer2);
+                _uiFactory.CreateHud(_gameDataPlayer1, _gameDataPlayer2);
+            }
+
+            if(type == LevelType.EditLevel)
+            {
+                EditLevelLoad levelLoad = new EditLevelLoad();
+                LevelData levelData = levelLoad.LoadStats();
+                _gameDataPlayer1.CurrentGoalKill = _gameDataPlayer1.StartGoalKill = levelData.Goal;
+                _gameObjectsFactory.CreateBase(levelData.BasePosition, _gameDataPlayer1);
+
+                _gameObjectsFactory.CreatePlayer(levelData.Player1Position, _gameDataPlayer1, _gameDataPlayer2, numberPlayer: 1);
+
+                if (_gameDataPlayer1.Multiplayer)
+                {
+                    _gameObjectsFactory.CreatePlayer(levelData.Player2Position, _gameDataPlayer1, _gameDataPlayer2, numberPlayer: 2);
+                }
+
+                _gameObjectsFactory.CreateSpawnController(levelData.Cooldown, levelData.SpawnWave, levelData.Spawners, _gameDataPlayer1);
+                _uiFactory.CreateGameMenu(_gameDataPlayer1, _gameDataPlayer2);
+                _uiFactory.CreateHud(_gameDataPlayer1, _gameDataPlayer2);
+            }
+
+            if(type == LevelType.LevelEditor) 
+            {
+                _uiFactory.CreateGameMenu(_gameDataPlayer1, _gameDataPlayer2);
+
+                GameObject levelEditor = Object.Instantiate(Resources.Load<GameObject>(PrefabsPath.LevelEditorPath));
+                LevelEditor edit = levelEditor.GetComponent<LevelEditor>();
+                edit.Construct(_gameStateMachine, _gameDataPlayer1, _saveLoadService);
             }
         }
     }

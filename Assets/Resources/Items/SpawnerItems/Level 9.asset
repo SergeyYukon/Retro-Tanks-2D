@@ -19,14 +19,18 @@ MonoBehaviour:
     timeToNextStage: 20
     stages:
     - enemyType: 1
-      amount: 40
+      amount: 30
     - enemyType: 0
+      amount: 10
+    - enemyType: 4
       amount: 20
-  - spawnCoolDown: 0
-    timeToNextStage: 0
+  - spawnCoolDown: 1
+    timeToNextStage: 20
     stages:
     - enemyType: 2
-      amount: 30
+      amount: 15
+    - enemyType: 3
+      amount: 15
   spawnPositions:
   - {x: 13.44, y: 7.2, z: 0}
   - {x: 0.39, y: 7.46, z: 0}

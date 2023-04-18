@@ -9,22 +9,25 @@ namespace Ui
 {
     public class GameMenu : MonoBehaviour
     {
-        private GameData _gameData;
+        private GameData _gameDataPlayer1;
+        private GameData _gameDataPlayer2;
         private UiFactory _uiFactory;
-        private InputService _input;
+        private InputServicePlayer1 _input;
         private GameObject _instancePauseMenu;
         private IGameStateMachine _gameStateMachine;
         private SaveLoadService _saveLoadService;
 
-        public void Construct(GameData gameData, UiFactory uiFactory, InputService input,
+        public void Construct(GameData gameDataPlayer1, GameData gameDataPlayer2, UiFactory uiFactory, InputServicePlayer1 input,
             IGameStateMachine gameStateMachine, SaveLoadService saveLoadService)
         {
-            _gameData = gameData;
+            _gameDataPlayer1 = gameDataPlayer1;
+            _gameDataPlayer2 = gameDataPlayer2;
             _uiFactory = uiFactory;
             _input = input;
             _gameStateMachine = gameStateMachine;
-            _gameData.OnDefeat += DefeatWindow;
-            _gameData.OnWin += WinWindow;
+            _gameDataPlayer1.OnDefeat += DefeatWindow;
+            _gameDataPlayer2.OnDefeat += DefeatWindow;
+            _gameDataPlayer1.OnWin += WinWindow;
             _saveLoadService = saveLoadService;
         }
 
@@ -46,19 +49,21 @@ namespace Ui
         private void WinWindow()
         {
             int scene = SceneManager.GetActiveScene().buildIndex;
-            if (scene > _gameData.LevelsEnd)
+            if (scene > _gameDataPlayer1.LevelsEnd)
             {
-                _gameData.LevelsEnd++;
+                _gameDataPlayer1.LevelsEnd++;
             }
-            _saveLoadService.SaveProgress(_gameData);
-            _uiFactory.CreateWinMenu(_gameData);
+            _saveLoadService.SaveProgress(_gameDataPlayer1, SaveLoadKeys.GameDataPlayer1Key);
+            _saveLoadService.SaveProgress(_gameDataPlayer2, SaveLoadKeys.GameDataPlayer2Key);
+            _uiFactory.CreateWinMenu(_gameDataPlayer1);
             _gameStateMachine.Enter<PauseResumeState>();
         }
 
         private void OnDestroy()
         {
-            _gameData.OnDefeat -= DefeatWindow;
-            _gameData.OnWin -= WinWindow;
+            _gameDataPlayer1.OnDefeat -= DefeatWindow;
+            _gameDataPlayer2.OnDefeat -= DefeatWindow;
+            _gameDataPlayer1.OnWin -= WinWindow;
         }
     }
 }

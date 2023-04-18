@@ -5,6 +5,8 @@ namespace Components.Enemy
     {
         PinkEnemy,
         BlueEnemy,
-        GreenEnemy
+        GreenEnemy,
+        AttackPlayerEnemy,
+        PatrolEnemy
     }
 }

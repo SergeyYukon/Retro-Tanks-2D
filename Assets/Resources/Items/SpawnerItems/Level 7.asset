@@ -28,9 +28,13 @@ MonoBehaviour:
     - enemyType: 1
       amount: 5
     - enemyType: 0
-      amount: 20
+      amount: 10
     - enemyType: 2
       amount: 10
+    - enemyType: 3
+      amount: 5
+    - enemyType: 4
+      amount: 5
   spawnPositions:
   - {x: 13.44, y: -2.56, z: 0}
   - {x: 6.06, y: 7.46, z: 0}

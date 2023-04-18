@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlayerPosition
   - SpawnPosition
   - BasePosition
+  - Player1Position
+  - Player2Position
   layers:
   - Default
   - TransparentFX

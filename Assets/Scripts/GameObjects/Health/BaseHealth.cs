@@ -6,6 +6,7 @@ namespace Components
 {
     public class BaseHealth : Health
     {
+        [SerializeField] private AudioSource getDamageSound;
         [SerializeField] private float _maxHealth;
         private float _currentHealth;
         private Action<float, float> _onHealthChanged;
@@ -20,6 +21,7 @@ namespace Components
         public override void GetDamage(float damage)
         {
             _currentHealth -= damage;
+            getDamageSound.Play();
 
             if (_currentHealth <= 0)
             {

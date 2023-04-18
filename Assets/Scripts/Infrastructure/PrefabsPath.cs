@@ -16,5 +16,8 @@ namespace Path
         public const string HealBonusPath = "Prefabs/GameObjects/Bonus/Heal";
         public const string UpgradeMoveSpeedBonusPath = "Prefabs/GameObjects/Bonus/UpgradeMoveSpeed";
         public const string UpgradeCooldownShootBonusPath = "Prefabs/GameObjects/Bonus/UpgradeCooldownShoot";
+        public const string UpgradeMaxHealthBonusPath = "Prefabs/GameObjects/Bonus/UpgradeMaxHealth";
+        public const string UpgradeDamageBonusPath = "Prefabs/GameObjects/Bonus/UpgradeDamage";
+        public const string LevelEditorPath = "Prefabs/LevelEditor/LevelEditor";
     }
 }

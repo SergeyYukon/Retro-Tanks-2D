@@ -13,26 +13,30 @@ MonoBehaviour:
   m_Name: Level 2
   m_EditorClassIdentifier: 
   sceneName: Level 2
-  goalKill: 20
+  goalKill: 15
   waves:
   - spawnCoolDown: 2
     timeToNextStage: 10
     stages:
     - enemyType: 1
-      amount: 5
+      amount: 2
     - enemyType: 0
-      amount: 5
+      amount: 3
     - enemyType: 2
       amount: 1
+    - enemyType: 4
+      amount: 2
   - spawnCoolDown: 1
     timeToNextStage: 5
     stages:
     - enemyType: 1
       amount: 3
     - enemyType: 0
-      amount: 4
-    - enemyType: 2
       amount: 2
+    - enemyType: 2
+      amount: 1
+    - enemyType: 3
+      amount: 1
   spawnPositions:
   - {x: 13.44, y: 7.2, z: 0}
   - {x: 0.39, y: 7.46, z: 0}

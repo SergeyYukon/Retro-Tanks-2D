@@ -1,23 +1,21 @@
 using Infrastructure.Data;
 using Infrastructure.Factory;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Components.Weapon
 {
     public class Shooter : MonoBehaviour
     {
+        [SerializeField] private AudioSource bonusSound;
         [SerializeField] private Transform _firePoint;
         private GameObjectsFactory _gameObjectsFactory;
         private float _damage;
         private float _pushPower;
-        private float _cooldownShoot;
+        private float _currentCooldownShoot;
         private LayerMask _layerToAttack;
         private GameObject _bulletPrefab;
         private LayerMask _immunity;
         private GameData _gameData;
-        private const float minCooldownShoot = 0.2f;
 
         private float _startCooldownShoot;
 
@@ -26,10 +24,17 @@ namespace Components.Weapon
         {
             _gameObjectsFactory = gameObjectsFactory;
             _gameData = gameData;
-            _damage = damage;
+
+            _damage = damage + _gameData.UpgradeDamage;
+            _damage = Mathf.Min(_damage, _gameData.MaxUpgradeDamage);
+            _gameData.CurrentDamage = _damage;
+
             _pushPower = pushPower;
-            _cooldownShoot = _startCooldownShoot = cooldownShoot - _gameData.UpgradeCooldownShoot;
-            _startCooldownShoot = _startCooldownShoot = Mathf.Max(_startCooldownShoot, minCooldownShoot);
+
+            _startCooldownShoot = cooldownShoot - _gameData.UpgradeCooldownShoot;
+            _currentCooldownShoot = _startCooldownShoot = Mathf.Max(_startCooldownShoot, _gameData.MinCooldownShoot);
+            _gameData.CurrentCooldown = _startCooldownShoot;
+
             _layerToAttack = layerToAttack;
             _bulletPrefab = bulletPrefab;
             _immunity = immunity;
@@ -40,15 +45,26 @@ namespace Components.Weapon
             if (ReadyShoot())
             {
                 Shoot();
-                _cooldownShoot = _startCooldownShoot;
+                _currentCooldownShoot = _startCooldownShoot;
             }
         }
 
         public void UpgradeCooldownShoot(float amount)
         {
+            bonusSound.Play();
             _gameData.UpgradeCooldownShoot += amount;
-            _startCooldownShoot -= _gameData.UpgradeCooldownShoot;
-            _startCooldownShoot = Mathf.Max(_startCooldownShoot, minCooldownShoot);
+            _startCooldownShoot -= amount;
+            _startCooldownShoot = Mathf.Max(_startCooldownShoot, _gameData.MinCooldownShoot);
+            _gameData.CurrentCooldown = _startCooldownShoot;
+        }
+
+        public void UpgradeDamage(float amount)
+        {
+            bonusSound.Play();
+            _gameData.UpgradeDamage += amount;
+            _damage += amount;
+            _damage = Mathf.Min(_damage, _gameData.MaxUpgradeDamage);
+            _gameData.CurrentDamage = _damage;
         }
 
         private void Shoot()
@@ -60,8 +76,8 @@ namespace Components.Weapon
 
         private bool ReadyShoot()
         {
-            _cooldownShoot -= Time.deltaTime;
-            return _cooldownShoot <= 0;
+            _currentCooldownShoot -= Time.deltaTime;
+            return _currentCooldownShoot <= 0;
         }
     }
 }
